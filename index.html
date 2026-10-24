@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6c3cf0">
+<title>Kuis Ceria SD</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎓%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#fff1b8;--ink:#2b2350;--pri:#6c3cf0}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1245;--ink:#f4f0ff;--pri:#7c5cf5}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:'Fredoka',system-ui,'Comic Sans MS',sans-serif}
+iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--bg)}
+#info{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:var(--bg)}
+#info.off{display:none}
+.spin{width:48px;height:48px;border-radius:50%;border:6px solid #0002;border-top-color:var(--pri);animation:r 1s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}}
+a.btn{background:var(--pri);color:#fff;padding:12px 22px;border-radius:16px;font-weight:700;text-decoration:none}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<div id="info"><div class="spin" id="spin"></div><div id="msg">Memuat kuis…</div></div>
+<script>
+// Ganti dengan URL deployment Apps Script (yang berakhiran /exec)
+const APP_URL = 'ISI_URL_APPS_SCRIPT_DI_SINI';
+
+const info = document.getElementById('info'), msg = document.getElementById('msg'), spin = document.getElementById('spin');
+function fallback(text, withLink) {
+  spin.style.display = 'none';
+  msg.innerHTML = text + (withLink ? '<br><br><a class="btn" href="' + APP_URL + '" target="_top">Buka kuis langsung</a>' : '');
+  info.classList.remove('off');
+}
+if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(APP_URL)) {
+  fallback('Alamat Apps Script belum diisi. Buka file ini dan isi <b>APP_URL</b> dengan URL deployment yang berakhiran /exec.', false);
+} else {
+  const f = document.createElement('iframe');
+  f.title = 'Kuis Ceria SD';
+  f.allow = 'autoplay; fullscreen';
+  f.src = APP_URL;
+  const t = setTimeout(() => fallback('Kuis lama dimuat. Cek koneksi internet, atau buka langsung.', true), 15000);
+  f.onload = () => { clearTimeout(t); info.classList.add('off'); };
+  document.body.appendChild(f);
+}
+</script>
+</body>
+</html>
